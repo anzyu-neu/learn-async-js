@@ -28,6 +28,9 @@ const incidents = [
     }
 ]
 
+// req = HTTP request
+// building server = process the request, create URI, map the URI name to a method (GET, etc)
+// based on method name and URI, server will take next action 
 const server = http.createServer((req, res) => {
     // Parse the request URL to extract parameters
     const parsedUrl = url.parse(req.url, true);
@@ -41,10 +44,15 @@ const server = http.createServer((req, res) => {
         // Check if all parameters are provided
         if (road && location && direction && id) {
             // Send response with the extracted parameters
+            // JSON specific here. can tailor differently based on client expectations
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(incidents.filter((incident) => {
                 return incident.id === `MABOS00${id}`
             })));
+        } else {
+            // If the request is for an unsupported endpoint, send a not found response
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Missing parameters in the URL');
         }
     } else {
         // If the request is for an unsupported endpoint, send a not found response
